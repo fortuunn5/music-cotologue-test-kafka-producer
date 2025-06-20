@@ -1,10 +1,7 @@
-package com.musiccotologue.music_cotologue_api_maven.repository;
+package com.musiccotologue.music_cotologue_api_maven.repository.musician;
 
 import com.musiccotologue.music_cotologue_api_maven.model.Musician;
-import org.springframework.data.repository.CrudRepository;
-
-import java.util.List;
-import java.util.Optional;
+import com.musiccotologue.music_cotologue_api_maven.repository.BaseRepository;
 
 public interface MusicianRepository extends BaseRepository<Musician, Long> {
 }

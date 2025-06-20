@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet id="create-table-musician" author="PomaProhorovich">
+       <sql>
+           create table if not exists musician
+           (
+               id serial primary key,
+               vc_name varchar not null
+           );
+       </sql>
+    </changeSet>
+    <changeSet id="create-table-song" author="PomaProhorovich">
+        <sql>
+            create table if not exists song
+            (
+                id serial primary key,
+                vc_name varchar not null,
+                musician_id integer not null REFERENCES musician(id)
+            )
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,8 +1,8 @@
-package com.musiccotologue.music_cotologue_api_maven.repository;
+package com.musiccotologue.music_cotologue_api_maven.repository.musician;
 
 import com.musiccotologue.music_cotologue_api_maven.model.Musician;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,30 +14,27 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MusicianRepositoryImpl implements MusicianRepository {
 
-    private final SessionFactory sessionFactory;
+    private final EntityManager entityManager;
 
     @Override
     public Musician save(Musician entity) {
-        return sessionFactory.getCurrentSession()
-                .merge(entity);
+        return entityManager.merge(entity);
     }
 
     @Override
     public Optional<Musician> findById(Long id) {
-        Musician musician = sessionFactory.getCurrentSession()
-                .get(Musician.class, id);
+        Musician musician = entityManager.find(Musician.class, id);
         return Optional.ofNullable(musician);
     }
 
     @Override
     public List<Musician> findAll() {
-        return sessionFactory.getCurrentSession().createQuery("from Musician").list();
+        return entityManager.createQuery("from Musician").getResultList();
     }
 
     @Override
     public void deleteById(Long id) {
-        sessionFactory.getCurrentSession()
-                .createQuery("delete from Musician where id = :id")
+        entityManager.createQuery("delete from Musician where id = :id")
                 .executeUpdate();
     }
 }

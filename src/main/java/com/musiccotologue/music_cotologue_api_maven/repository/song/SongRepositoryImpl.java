@@ -1,8 +1,9 @@
-package com.musiccotologue.music_cotologue_api_maven.repository;
+package com.musiccotologue.music_cotologue_api_maven.repository.song;
 
+import com.musiccotologue.music_cotologue_api_maven.kafka.SongKafkaProducer;
 import com.musiccotologue.music_cotologue_api_maven.model.Song;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,30 +15,31 @@ import java.util.Optional;
 @Transactional
 public class SongRepositoryImpl implements SongRepository {
 
-    private final SessionFactory sessionFactory;
+    private final EntityManager entityManager;
+    // move to service
+    private final SongKafkaProducer songKafkaProducer;
 
     @Override
     public Song save(Song entity) {
-        return sessionFactory.getCurrentSession()
-                .merge(entity);
+        Song merge = entityManager.merge(entity);
+        songKafkaProducer.send(merge);
+        return merge;
     }
 
     @Override
     public Optional<Song> findById(Long id) {
-        Song musician = sessionFactory.getCurrentSession()
-                .get(Song.class, id);
+        Song musician = entityManager.find(Song.class, id);
         return Optional.ofNullable(musician);
     }
 
     @Override
     public List<Song> findAll() {
-        return sessionFactory.getCurrentSession().createQuery("from Song").list();
+        return entityManager.createQuery("from Song").getResultList();
     }
 
     @Override
     public void deleteById(Long id) {
-        sessionFactory.getCurrentSession()
-                .createQuery("delete from Song where id = :id")
+        entityManager.createQuery("delete from Song where id = :id")
                 .executeUpdate();
     }
 }
